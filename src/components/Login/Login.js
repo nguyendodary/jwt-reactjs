@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Login.scss";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -38,11 +38,25 @@ const Login = (props) => {
             }
             sessionStorage.setItem("account", JSON.stringify(data));
             history.push("/users");
+            window.location.reload();
         }
         if (response && response.data && +response.data.EC !== 0) {
             toast.error(response.data.EM);
         }
     }
+
+    const handlePressEnter = (event) => {
+        if (event.charCode === 13 && event.code === "Enter") {
+            handleLogin();
+        }
+    }
+
+    useEffect(() => {
+        let session = sessionStorage.getItem("account");
+        if (session) {
+            history.push("/");
+        }
+    }, [])
 
     return (
         <div className="login-container">
@@ -71,6 +85,7 @@ const Login = (props) => {
                             placeholder="Password"
                             value={password}
                             onChange={(event) => { setPassword(event.target.value) }}
+                            onKeyPress={(event) => handlePressEnter(event)}
                         />
                         <button className="btn btn-primary" onClick={() => handleLogin()}>Login</button>
                         <span className="text-center"><a className="forgotten-password" href="#">Forgotten Password?</a></span>
