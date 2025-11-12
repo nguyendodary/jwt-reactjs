@@ -3,6 +3,7 @@ import { fetchAllUser, deleteUser } from "../../services/userService";
 import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
 import ModalDelete from "./ModalDelete";
+import ModalUser from "./ModalUser";
 const Users = (props) => {
     const [listUsers, setListUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState([1]);
@@ -10,6 +11,8 @@ const Users = (props) => {
     const [totalPages, setTotalPages] = useState([0]);
     const [isShowModalDelete, setIsShowModalDelete] = useState(false);
     const [dataModal, setDataModal] = useState({});
+
+    const [isShowModalUser, setIsShowModalUser] = useState(false);
 
     useEffect(() => {
         fetchUsers();
@@ -40,6 +43,8 @@ const Users = (props) => {
         setDataModal({})
     }
 
+
+
     const confirmDeleteUser = async () => {
         let response = await deleteUser(dataModal);
         console.log("Check user: ", response)
@@ -50,6 +55,10 @@ const Users = (props) => {
         } else {
             toast.error(response.data.EM);
         }
+    }
+
+    const onHideModalUser = () => {
+        setIsShowModalUser(false);
     }
 
     return (
@@ -64,7 +73,7 @@ const Users = (props) => {
                         </div>
                         <div className="actions">
                             <button className="btn btn-success">Refresh</button>
-                            <button className="btn btn-primary">Add new user</button>
+                            <button className="btn btn-primary" onClick={() => setIsShowModalUser(true)}>Add new user</button>
                         </div>
                     </div>
                     <div className="user-body">
@@ -142,6 +151,11 @@ const Users = (props) => {
                 handleClose={handleClose}
                 confirmDeleteUser={confirmDeleteUser}
                 dataModal={dataModal}
+            />
+            <ModalUser
+                title={"Create new user"}
+                onHide={onHideModalUser}
+                show={isShowModalUser}
             />
         </>
     )
